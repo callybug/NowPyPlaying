@@ -12,33 +12,37 @@
 import sys
 from mpd import MPDClient
 
+outfile="/home/sithrazer/.config/mpd/nowplaying"
+
 client = MPDClient()
 client.timeout = 5
 try:
     client.connect("localhost",6600)
     print(client.mpd_version)
+    #print(client.status())
+    #print(client.currentsong())
 except:
     print("Could not connect to MPD")
     sys.exit(1)
 
 #set up vars here to avoid reinitialising every loop
 prevsong=0 #songid starts at index 1; 0 guarantees fresh read on load
-status=client.status()
-cursong=client.currentsong()
 outstr=""
 
 while True:
+    status=client.status()
+    cursong=client.currentsong()
+    print(status["state"])
     if status["state"] == "pause" or status["state"] == "stop":
         #no song playing; blank file
-        outstr=""
-        #call write function
+        outstr=" "
         #set prevsong to '0' so file will update when playback resumes
         prevsong=0
-    elif cursong["songid"] == prevsong:
+    elif status["songid"] == prevsong:
+        pass
         #same song still playing; no need to update file
-        #idle here?
     else:
-         try:
+        try:
             outstr=(f"""{cursong["title"]} by {cursong["albumartist"]}
 {cursong["album"]}""")
             print("success")
@@ -49,28 +53,19 @@ while True:
         except:
             outstr="Error fetching track info"
             print("multiple errors")
+            False
         finally:
             print(outstr)
+    #call write function here write(outstr)
+    f=open(outfile,"w")
+    f.write(outstr)
+    f.close()
+    client.idle('player')
 
-try:
-    outstr=(f"""{cursong["title"]} by {cursong["albumartist"]}
-{cursong["album"]}""")
-    print("success")
-except KeyError:
-    outstr=(f"""{cursong["title"]} by {cursong["artist"]}
-{cursong["album"]}""")
-    print("no albumartist tag")
-except:
-    outstr="Error fetching track info"
-    print("multiple errors")
-finally:
-    print(outstr)
-
-print(client.status())
-print(client.stats())
-#client.idle('player')
-client.close()
-client.disconnect()
+#print(client.status())
+#print(client.stats())
+#client.close()
+#client.disconnect()
 sys.exit(0)
 
 #function to handle writing to file
