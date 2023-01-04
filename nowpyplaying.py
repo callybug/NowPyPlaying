@@ -8,6 +8,7 @@
 import sys
 import os.path as path
 from mpd import MPDClient
+
 ### CONFIG ###
 #Enter the complete path and filename for the file OBS will read the information from
 outfile=path.expanduser("~/.config/mpd/nowplaying.txt")
@@ -15,13 +16,12 @@ outfile=path.expanduser("~/.config/mpd/nowplaying.txt")
 #Enter MPD connection details
 mpdURL="localhost"
 mpdPort=6600
-
 ### END CONFIG ###
 
 client = MPDClient()
 client.timeout = 5
 try:
-    client.connect("localhost",6600)
+    client.connect(mpdURL,mpdPort)
     print(client.mpd_version)
 except:
     print("Could not connect to MPD")
