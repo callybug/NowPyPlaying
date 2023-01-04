@@ -8,6 +8,14 @@ Requires python-mpd2
 
 # Config
 
-Open nowpyplaying.py in a text editor and put your full path and filename in 'outfile'
+Configuration defaults to "/home/*username*/.config/mpd/nowplaying.txt" for the output file and "localhost:6600" for the MPD server URL:port.
 
->outfile = "/path/to/file.txt"
+To change the default configs open nowpyplaying.py in a text editor and put your full path and filename in 'outfile'
+
+>outfile="/path/to/file.txt"
+
+and the MPD server details in 'mpdURL' and 'mpdPort'
+
+>mpdURL=IPAddress/URL
+>
+>mpdPort=PortNumber
