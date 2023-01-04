@@ -2,7 +2,13 @@
 
 Python script to monitor MPD and create a plain text file of info on currently playing media for ready access by other programs.
 
-Requires python-mpd2
+In OBS create a text source, set it to 'Read from file' and select 'nowplaying.txt' as the file to read.
+
+# Requirements
+
+Intended for Linux as written but should work on any platform MPD supports by setting the configuration variables to reflect your OS and setup.
+
+Requires python3 and python-mpd2
 
 >pip3 install python-mpd2
 
