@@ -1,15 +1,22 @@
 #!/usr/bin/python3
 #MPD monitor for writing 'now playing' details to a file to be picked up by OBS
 
-#Enter the complete path and filename for the file OBS will read the information from
-outfile=""
-
 #TODO
 #figure out system to display license info for royalty free artists that require it
 #figure out method for user friendly clean shutdown
 
 import sys
+import os.path as path
 from mpd import MPDClient
+### CONFIG ###
+#Enter the complete path and filename for the file OBS will read the information from
+outfile=path.expanduser("~/.config/mpd/nowplaying.txt")
+
+#Enter MPD connection details
+mpdURL="localhost"
+mpdPort=6600
+
+### END CONFIG ###
 
 client = MPDClient()
 client.timeout = 5
