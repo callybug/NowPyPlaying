@@ -7,6 +7,7 @@ In OBS create a text source, set it to 'Read from file' and select 'nowplaying.t
 # Requirements
 
 Intended for Linux as written but should work on any platform MPD supports by setting the configuration variables to reflect your OS and setup.
+Windows users: change line 63 so that / is replaced with \ 
 
 Requires python3 and python-mpd2
 
