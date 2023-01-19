@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 #MPD monitor for writing 'now playing' details to a file to be picked up by OBS
+#Originally written by Sithrazer, modified by callybug
+#Edited to show either "artist - filename" or "filename" (with path and extensions removed), when there are no other tags found. Otherwise it'd crash for the folks who are lazy with their tagging (like me).
 
 #TODO
 #figure out system to display license info for royalty free artists that require it
@@ -34,6 +36,7 @@ outstr=" "
 while True:
     status=client.status()
     cursong=client.currentsong()
+    audioextensions=[".flac",".ogg", ".opus",".mp3",".webm",".m4a",".wav",".wma", ".mp4", ".mkv"]
     print(status["state"])
     if status["state"] == "pause" or status["state"] == "stop":
         #no song playing; blank file
@@ -46,19 +49,34 @@ while True:
         #pass
     else:
         try:
-            outstr=(f"""{cursong["title"]} by {cursong["albumartist"]}
-{cursong["album"]}""")
-            print("success")
-        except KeyError:
-            outstr=(f"""{cursong["title"]} by {cursong["artist"]}
-{cursong["album"]}""")
-            print("no albumartist tag")
-        except:
-            outstr="Error fetching track info"
-            print("multiple errors")
-            False
-        finally:
+            outstr=(f"""{cursong["albumartist"]} - {cursong["title"]}""")
             print(outstr)
+        except KeyError:
+              try:
+                  outstr=(f"""{cursong["artist"]} - {cursong["title"]}""")
+                  print(outstr)
+              except KeyError:
+                               try:
+                                   outstr=(f"""{cursong["file"]}""")
+                                   slashCount = 0
+                                   for i in outstr:
+                                         if i == '/':
+                                             slashCount = slashCount + 1
+                                   noPath = outstr.split('/')[slashCount]
+                                   a=0
+                                   for x in range(len(audioextensions)):
+                                         formatcheck = audioextensions[a]
+                                         a=a+1
+                                         NoExt = noPath.replace(formatcheck,'')
+                                         noPath=NoExt
+                                   noPathExt=NoExt
+                                   outstr=(f"""{cursong["artist"]} - {noPathExt}""")
+                                   print(outstr)
+                               except KeyError:
+                                             try:
+                                                       outstr=noPathExt
+                                             finally:
+                                                       print(outstr)
     #call write function here write(outstr)
     f=open(outfile,"w")
     f.write(outstr)
